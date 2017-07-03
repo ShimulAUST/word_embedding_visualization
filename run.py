@@ -124,12 +124,6 @@ class SemanticMap:
         print(words)
         print(clusters.tolist())
 
-def cli(mapper_cli):
-    while True:
-        line = raw_input('Enter words or MWEs > ')
-        if line == 'exit':
-            break
-        #mapper_cli.map_cluster_plot(line.split(','), None, 0.2)
 
 def save_config(config):
     with open('config.json', 'w') as f:
@@ -146,15 +140,27 @@ def take_parameters():
                                     config['vector_path'], config['dr_method'], config['loading_system']))
 
     while True:
-        line = raw_input('>')
+        line = raw_input('> ').strip()
 
-        if line.starts_with('-emb'):
+        if line.startswith('-emb'):
             tokens = line.split(' ')
             if len(tokens) !=2:
                 print('Invalid command.\n')
             else:
                 config['vector_path'] = tokens[1]
                 save_config(config)
+        elif line == 'EXIT' or line == 'exit':
+            exit()
+
+        elif line.startswith('-plot'):
+            tokens = line.split()
+            words   = []
+            if tokens[1] == '-f':
+                words = open(tokens[2], 'r').read().split('\n')[:-1]
+            else:
+                words = tokens[1].split(',')
+
+            plot(words)
 
 
 if __name__ == "__main__":
