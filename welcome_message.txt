@@ -1,0 +1,42 @@
+========================================================================
+= WELCOME !!!!
+=
+= With this module you can visualize semantically similar words based
+= on the word embeddings trained using Word2Vec.
+
+=------------------------
+= Current Configuration
+=------------------------
+> WORD EMBEDDING PATH : '{}'
+> Dimension Reduction Method : '{}'
+> Vector Loading System : '{}'
+> 
+= How to Use
+=------------------------
+1. To change Word Embedding Path, execute:
+"-emb <filepath>"
+
+2. To change Dimension Reduction Method, execute:
+"-dr tsne"
+OR
+"-dr pca"
+
+3. To change vector loading system, execute:
+"-ld gensim" (To load vectors from a gensim dump)
+OR
+"-ld txt" (To load vectors from a plain text file. Each line contains)
+OR
+"-ld json" (To load vectors from a json file. 
+			Key is word and value is vector)
+OR
+"-ld pkl" (To load from a scikit-learn joblib dump)
+
+4. To visualize words from a newline seperated file, execute:
+-plot <filepath>"
+
+5. To visualize words from terminal, type words separated by comma and 
+press ENTER.
+
+6. To exit, execute EXIT or QUIT
+
+========================================================================
