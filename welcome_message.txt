@@ -32,10 +32,11 @@ OR
 "-ld pkl" (To load from a scikit-learn joblib dump)
 
 4. To visualize words from a newline seperated file, execute:
--plot <filepath>"
+-plot -f <filepath>"
 
-5. To visualize words from terminal, type words separated by comma and 
-press ENTER.
+5. To visualize words from terminal, after typing -plot type words 
+separated by comma and press ENTER.
+-plot <word1>,<word2>,<word3>,<word4>
 
 6. To exit, execute EXIT or QUIT
 

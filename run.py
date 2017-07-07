@@ -23,9 +23,37 @@ __author__ = "Sudipta Kar"
 model_path_google = '/home/sk/SK/Works/NarrativeAnalysis/experiments/classification/processed_data/embeddings/trained_embeddings.bin'
 
 class SemanticMap:
-    def __init__(self, model_path):
-        #self.model = w2v.Word2Vec.load_word2vec_format(model_path, binary=True, encoding='utf8')
-        self.model = w2v.Word2Vec.load(model_path)
+    def __init__(self):
+        self.model = {}
+        with open('config.json', 'r') as f:
+            self.config = json.load(f)
+            f.close()
+
+    def load_vectors(self):
+        if self.config['loading_system'] == 'gensim':
+            try:
+                self.model = w2v.Word2Vec.load(self.config['vector_path'])
+            except:
+                self.model = w2v.Word2Vec.load_word2vec_format(self.config['vector_path'], binary=True, encoding='utf8')
+
+        elif self.config['loading_system'] == 'txt':
+            with open(self.config['vector_path'], 'r') as vf:
+                lines = vf.read().split('\n')
+                for line in lines:
+                    tokens = split()
+                    vector = [number(tk) for tk in tokens[1:]]
+                    self.model[tokens[0]] = vector
+                vf.close()
+
+        elif self.config['loading_system'] == 'json':
+            with open(self.config['vector_path'], 'r') as vf:
+                self.model = json.load(vf)
+                vf.close()
+
+        elif self.config['loading_system'] == 'pkl':
+            from sklearn.externals import joblib
+            self.model = joblib.load(self.config['vector_path'])
+
 
     def __split_words(self, input_string):
         return re.findall(r"[\w']+", input_string)
@@ -52,7 +80,7 @@ class SemanticMap:
         words = self.__remove_stop_words(self.__clean_words(self.__split_words(term)))
 
         if len(words) < 1:
-            print('All the terms have been filtered.')
+            # print('All the terms have been filtered.')
             raise
         if len(words) == 1:
             try:
@@ -72,12 +100,14 @@ class SemanticMap:
 
     def __reduce_dimensionality(self, word_vectors):
         data = np.array(word_vectors)
-        #pca = dcmp.PCA(n_components=dimension)
-        #pca.fit(data)
-        #return pca.transform(data)
-        
-        tsne_model = TSNE(n_components=2, random_state=0, n_iter=1000 )
-        return tsne_model.fit_transform(data)
+        print('::: Reducing Demension using {}\n'.format(self.config['dr_method']))
+
+        if self.config['dr_method'] == 'PCA':
+            pca = dcmp.PCA(n_components=2)
+            return pca.fit_transform(data)
+        else:
+            tsne_model = TSNE(n_components=2, random_state=7)
+            return tsne_model.fit_transform(data)
 
 
     def cluster_results(self, data, threshold=0.13):
@@ -130,6 +160,12 @@ def save_config(config):
         json.dump(config, f)
         f.close()
 
+def plot(words):
+    mapper = SemanticMap()
+    mapper.load_vectors()
+    mapper.map_cluster_plot(words, None, 0.2)
+
+
 def take_parameters():
     config = {}
     with open('config.json', 'r') as f:
@@ -152,6 +188,35 @@ def take_parameters():
         elif line == 'EXIT' or line == 'exit':
             exit()
 
+        elif line.startswith('-dr'):
+            tokens = line.split()
+
+            if len(tokens) == 2 and tokens[1].lower() == 'tsne':
+                config['dr_method'] = 'TSNE'
+                save_config(config)
+            elif len(tokens) == 2 and tokens[1].lower() == 'pca':
+                config['dr_method'] = 'PCA'
+                save_config(config)
+            else:
+                print(':: Invalid command.\n')
+
+        elif line.startswith('-ld'):
+            tokens = line.split()
+            if len(tokens) == 2 and tokens[1].lower() == 'gensim':
+                config['loading_system'] = 'gensim'
+                save_config(config)
+            elif len(tokens) == 2 and tokens[1].lower() == 'txt':
+                config['loading_system'] = 'txt'
+                save_config(config)
+            elif len(tokens) == 2 and tokens[1].lower() == 'json':
+                config['loading_system'] = 'json'
+                save_config(config)
+            elif len(tokens) == 2 and tokens[1].lower() == 'pkl':
+                config['loading_system'] = 'pkl'
+                save_config(config)
+            else:
+                print(':: Invalid command.\n')
+
         elif line.startswith('-plot'):
             tokens = line.split()
             words   = []
@@ -166,5 +231,3 @@ def take_parameters():
 if __name__ == "__main__":
     take_parameters()
     cli()
-    #mapper = SemanticMap(model_path_google)
-    #cli(mapper)
