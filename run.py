@@ -38,10 +38,10 @@ class SemanticMap:
 
         elif self.config['loading_system'] == 'txt':
             with open(self.config['vector_path'], 'r') as vf:
-                lines = vf.read().split('\n')
+                lines = vf.read().split('\n')[1:-1]
                 for line in lines:
-                    tokens = split()
-                    vector = [number(tk) for tk in tokens[1:]]
+                    tokens = line.split()
+                    vector = [float(tk) for tk in tokens[1:]]
                     self.model[tokens[0]] = vector
                 vf.close()
 
@@ -162,7 +162,11 @@ def save_config(config):
 
 def plot(words):
     mapper = SemanticMap()
-    mapper.load_vectors()
+    try:
+        mapper.load_vectors()
+    except:
+        print('Error Loading Vectors. Check file path and format again.\n')
+
     mapper.map_cluster_plot(words, None, 0.2)
 
 

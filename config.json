@@ -1,1 +1,1 @@
-{"dr_method": "TSNE", "loading_system": "gensim", "vector_path": "/home/sk/SK/Works/NarrativeAnalysis/experiments/classification/processed_data/embeddings/trained_embeddings.bin"}
+{"dr_method": "PCA", "loading_system": "txt", "vector_path": "wiki_emb.txt"}
