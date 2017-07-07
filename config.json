@@ -1,1 +1,1 @@
-{"dr_method": "PCA", "loading_system": "txt", "vector_path": "wiki_emb.txt"}
+{"dr_method": "TSNE", "vector_path": "wiki_emb.txt", "loading_system": "txt"}

@@ -21,6 +21,7 @@ __author__ = "Sudipta Kar"
 #model_path_google = '/home/ritual/SK/Works/Booxby/word_embeddings_on_reviews/models/min_15_1000_it/wmd_min15_1000.bin'
 #model_path_google = '/home/sk/SK/Works/resources/GoogleNews-vectors-negative300.bin.gz'
 model_path_google = '/home/sk/SK/Works/NarrativeAnalysis/experiments/classification/processed_data/embeddings/trained_embeddings.bin'
+mapper = None
 
 class SemanticMap:
     def __init__(self):
@@ -161,11 +162,12 @@ def save_config(config):
         f.close()
 
 def plot(words):
-    mapper = SemanticMap()
-    try:
-        mapper.load_vectors()
-    except:
-        print('Error Loading Vectors. Check file path and format again.\n')
+    if mapper == None:
+		mapper = SemanticMap()
+		try:
+			mapper.load_vectors()
+		except:
+			print('Error Loading Vectors. Check file path and format again.\n')
 
     mapper.map_cluster_plot(words, None, 0.2)
 
